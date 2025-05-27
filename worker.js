@@ -27,7 +27,7 @@ function extractNodeName(nodeLink) {
     try {
       const config = JSON.parse(safeBase64Decode(nodeLink.substring(8)));
       if (config.ps) {
-        return decodeURIComponent(config.ps);
+        return safeUtf8Decode(config.ps);
       }
     } catch {}
     return '未命名节点';
@@ -1221,9 +1221,6 @@ function serveAdminPanel(env, adminPath) {
           const listElement = document.getElementById('subscriptionList');
           listElement.innerHTML = '';
           
-          // 获取已展开的订阅列表
-          const expandedSubs = JSON.parse(localStorage.getItem('expandedSubscriptions') || '[]');
-          
           const fragment = document.createDocumentFragment();
           
           for (const sub of subscriptions) {
@@ -1264,7 +1261,7 @@ function serveAdminPanel(env, adminPath) {
                   </button>
                 </div>
               </div>
-              <div class="node-list-area \${expandedSubs.includes(sub.path) ? 'expanded' : ''}" id="node-list-\${sub.path}">
+              <div class="node-list-area" id="node-list-\${sub.path}">
                 <div class="table-responsive mt-3">
                   <table class="table">
                     <thead>
@@ -1295,16 +1292,6 @@ function serveAdminPanel(env, adminPath) {
           }
           
           listElement.appendChild(fragment);
-
-          // 自动加载已展开订阅的节点列表
-          for (const sub of subscriptions) {
-            if (expandedSubs.includes(sub.path)) {
-              loadNodeList(sub.path).catch(error => {
-                console.error('加载节点列表失败:', error);
-                showToast('加载节点列表失败: ' + error.message, 'danger');
-              });
-            }
-          }
         } catch (error) {
           showToast('加载订阅列表失败: ' + error.message, 'danger');
         }
@@ -1594,7 +1581,7 @@ function serveAdminPanel(env, adminPath) {
           try {
             const config = JSON.parse(atob(nodeLink.substring(8)));
             if (config.ps) {
-              return decodeURIComponent(config.ps);
+              return safeUtf8DecodeFrontend(config.ps);
             }
           } catch {}
           return '未命名节点';
@@ -1643,6 +1630,34 @@ function serveAdminPanel(env, adminPath) {
         return Object.entries(NODE_TYPES_FRONTEND).find(([prefix]) => 
           lowerLink.startsWith(prefix)
         )?.[1] || '';
+      }
+
+      // 安全的UTF-8字符串解码函数（前端版本）
+      function safeUtf8DecodeFrontend(str) {
+        if (!str) return str;
+        
+        try {
+          // 方法1：使用escape + decodeURIComponent
+          return decodeURIComponent(escape(str));
+        } catch (e1) {
+          try {
+            // 方法2：直接使用decodeURIComponent
+            return decodeURIComponent(str);
+          } catch (e2) {
+            try {
+              // 方法3：使用TextDecoder（如果支持）
+              if (typeof TextDecoder !== 'undefined') {
+                const encoder = new TextEncoder();
+                const decoder = new TextDecoder('utf-8');
+                return decoder.decode(encoder.encode(str));
+              }
+            } catch (e3) {
+              // 如果所有方法都失败，返回原始字符串
+              return str;
+            }
+            return str;
+          }
+        }
       }
 
       
@@ -1699,13 +1714,7 @@ function serveAdminPanel(env, adminPath) {
       async function loadNodeList(subscriptionPath) {
         const nodeListArea = document.getElementById('node-list-' + subscriptionPath);
         if (!nodeListArea) {
-          console.warn('找不到节点列表区域');
-          return;
-        }
-
-        // 如果节点列表区域没有展开，不需要加载数据
-        if (!nodeListArea.classList.contains('expanded')) {
-          return;
+          throw new Error('找不到节点列表区域');
         }
 
         const tbody = nodeListArea.querySelector('tbody');
@@ -2321,7 +2330,8 @@ function parseVmessLink(vmessLink) {
     const config = JSON.parse(safeBase64Decode(vmessLink.substring(8)));
     if (!config.add || !config.port || !config.id) return null;
     
-    const name = config.ps ? decodeURIComponent(escape(config.ps)) : '未命名节点';
+    // 正确处理UTF-8编码的中文字符
+    const name = config.ps ? safeUtf8Decode(config.ps) : '未命名节点';
     const configParts = [
       `${name} = vmess`,
       config.add,
@@ -2637,20 +2647,37 @@ function safeBase64Encode(str) {
 // 安全的Base64解码辅助函数
 function safeBase64Decode(str) {
   try {
-    // 解码 Base64
-    const rawString = atob(str);
-    
-    // 将原始字符串转换为字符数组
-    const array = new Uint8Array(rawString.length);
-    for (let i = 0; i < rawString.length; i++) {
-      array[i] = rawString.charCodeAt(i);
-    }
-    
-    // 使用 TextDecoder 解码为 UTF-8 字符串
-    const decoder = new TextDecoder('utf-8');
-    return decoder.decode(array);
+    return atob(str);
   } catch (e) {
     return str;
+  }
+}
+
+// 安全的UTF-8字符串解码函数
+function safeUtf8Decode(str) {
+  if (!str) return str;
+  
+  try {
+    // 方法1：使用escape + decodeURIComponent
+    return decodeURIComponent(escape(str));
+  } catch (e1) {
+    try {
+      // 方法2：直接使用decodeURIComponent
+      return decodeURIComponent(str);
+    } catch (e2) {
+      try {
+        // 方法3：使用TextDecoder（如果支持）
+        if (typeof TextDecoder !== 'undefined') {
+          const encoder = new TextEncoder();
+          const decoder = new TextDecoder('utf-8');
+          return decoder.decode(encoder.encode(str));
+        }
+      } catch (e3) {
+        // 如果所有方法都失败，返回原始字符串
+        return str;
+      }
+      return str;
+    }
   }
 }
 
