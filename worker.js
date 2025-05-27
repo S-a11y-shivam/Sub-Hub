@@ -2637,7 +2637,18 @@ function safeBase64Encode(str) {
 // 安全的Base64解码辅助函数
 function safeBase64Decode(str) {
   try {
-    return atob(str);
+    // 解码 Base64
+    const rawString = atob(str);
+    
+    // 将原始字符串转换为字符数组
+    const array = new Uint8Array(rawString.length);
+    for (let i = 0; i < rawString.length; i++) {
+      array[i] = rawString.charCodeAt(i);
+    }
+    
+    // 使用 TextDecoder 解码为 UTF-8 字符串
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(array);
   } catch (e) {
     return str;
   }
