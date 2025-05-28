@@ -1,16 +1,36 @@
 # Sub-Hub
 
-Sub-Hub 是一个基于 Cloudflare Workers 的代理节点订阅管理系统。它提供了一个直观的 Web 界面，让您可以轻松管理多个订阅和节点。
+- Sub-Hub 是一个基于 Cloudflare Workers 的代理节点订阅管理系统。它提供了一个直观的 Web 界面，让您可以轻松管理多个订阅和节点
+- 基于Cloudflare Worker 搭建，不需要借助VPS进行部署
+- 支持原始格式，BASE64格式，Surge格式、Clash格式（内置模板，需要使用自己的规则可以按需修改）
+- 支持SS、VMess、VLESS（除Surge）、Trojan、SOCKS5、Snell（仅Surge）、Hysteria2、Tuic 格式节点的托管
+- 本项目不使用任何第三方订阅转换，所以可能有部分协议转换不完整，目前支持的协议经过测试没发现太大问题
+- 基于Cursor纯AI代码 ~~越来越屎山了~~，有问题可以提，但不一定能解决
+
+
+
+## 2025.05.28更新：
+
+  - 新增支持了Hysteria2协议
+  - 新增支持了Tuic协议
+  - 新增了支持了Clash（内置模板）
+  - 新增了一些BUG
+
+
+      
 
 ## 功能特点
 
 - 🚀 支持多种代理协议
   - SS（Shadowsocks）
+  - SS2022（Shadowsocks 2022）
   - VMess
   - Trojan
   - VLESS（除 Surge 外）
   - SOCKS5
   - Snell（仅 Surge）
+  - Hysteria2
+  - Tuic
 
 - 💼 订阅管理
   - 创建多个独立订阅
@@ -22,6 +42,7 @@ Sub-Hub 是一个基于 Cloudflare Workers 的代理节点订阅管理系统。�
   - 原始格式（适用于大多数客户端）
   - Base64 编码格式（/v2ray 路径）
   - Surge 配置格式（/surge 路径）
+  - Clash 配置格式（/clash 路径）(内置Clash模板)
 
 - 🔒 安全特性
   - 管理面板登录认证
@@ -117,7 +138,7 @@ CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
    - 原始格式：`https://你的域名/订阅路径`
    - Base64 格式：`https://你的域名/订阅路径/v2ray`
    - Surge 格式：`https://你的域名/订阅路径/surge`
-
+   - Clash 格式：`https://你的域名/订阅路径/clash`
 
 ## 使用说明
 
