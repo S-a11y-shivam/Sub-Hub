@@ -2,7 +2,7 @@
 
 - Sub-Hub 是一个基于 Cloudflare Workers 的代理节点订阅管理系统。它提供了一个直观的 Web 界面，让您可以轻松管理多个订阅和节点
 - 基于Cloudflare Worker 搭建，不需要借助VPS进行部署
-- 支持原始格式，BASE64格式，Surge格式、Clash格式（内置模板，仅测试win端Mihomo和op端Openclash，需要使用自己的规则可以按需修改）
+- 支持原始格式，BASE64格式，Surge格式、Clash格式（内置模板，需要使用自己的规则可以按需修改）
 - 支持SS、VMess、VLESS（除Surge）、Trojan、SOCKS5、Snell（仅Surge）、Hysteria2、Tuic 格式节点的托管
 - 本项目不使用任何第三方订阅转换，所以可能有部分协议转换不完整，目前支持的协议经过测试没发现太大问题
 - 基于Cursor纯AI代码 ~~越来越屎山了~~，有问题可以提，但不一定能解决
