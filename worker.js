@@ -3014,6 +3014,17 @@ function parseVlessToClash(vlessLink) {
       node.flow = flow;
     }
     
+    // Reality 配置
+    if (params.get('security') === 'reality') {
+      const publicKey = params.get('pbk');
+      const shortId = params.get('sid');
+      if (publicKey || shortId) {
+        node['reality-opts'] = {};
+        if (publicKey) node['reality-opts']['public-key'] = publicKey;
+        if (shortId) node['reality-opts']['short-id'] = shortId;
+      }
+    }
+    
     // 添加网络类型配置
     const type = params.get('type');
     if (type === 'ws') {
