@@ -3110,135 +3110,16 @@ function generateClashConfig(proxies) {
   
   const config = {
     // 用于下载订阅时指定UA
-    'global-ua': 'clash.meta',
+    'global-ua': 'clash',
     
     // 全局配置
     mode: 'rule',
-    port: 7890,
-    'socks-port': 7891,
-    'redir-port': 7892,
-    'mixed-port': 7893,
-    'tproxy-port': 7895,
-    ipv6: false,
+    'mixed-port': 7890,
     'allow-lan': true,
-    'unified-delay': true,
-    'tcp-concurrent': true,
-    
-    // GEO设置
-    'geodata-mode': true,
-    'geodata-loader': 'standard',
-    'geo-auto-update': true,
-    'geo-update-interval': 24,
-    
-    // GEO文件设置
-    'geox-url': {
-      geoip: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat',
-      geosite: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat',
-      mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb',
-      asn: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/GeoLite2-ASN.mmdb'
-    },
     
     // 控制面板
     'external-controller': '0.0.0.0:9090',
-    secret: 'Caihao1025..',
-    'external-ui': '/etc/openclash',
-    'external-ui-url': 'https://gh-proxy.com/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip',
     
-    'find-process-mode': 'strict',
-    'global-client-fingerprint': 'chrome',
-    'keep-alive-idle': 600,
-    'keep-alive-interval': 30,
-    
-    // 策略组选择和fakeip缓存
-    profile: {
-      'store-selected': true,
-      'store-fake-ip': true
-    },
-    
-    // 流量嗅探
-    sniffer: {
-      enable: true,
-      'override-destination': true,
-      sniff: {
-        QUIC: {
-          ports: [443, 8443]
-        },
-        TLS: {
-          ports: [443, 8443]
-        },
-        HTTP: {
-          ports: [80, '8080-8880'],
-          'override-destination': true
-        }
-      },
-      'force-domain': [
-        '+.netflix.com',
-        '+.nflxvideo.net',
-        '+.amazonaws.com',
-        '+.media.dssott.com'
-      ],
-      'skip-domain': [
-        'Mijia Cloud',
-        '+.push.apple.com'
-      ]
-    },
-    
-    // 代理模式
-    tun: {
-      enable: true,
-      stack: 'system',
-      device: 'utun',
-      'dns-hijack': [
-        'any:53',
-        'tcp://any:53'
-      ],
-      'auto-route': false,
-      'auto-redirect': false,
-      'auto-detect-interface': false
-    },
-    
-    // DNS模块
-    dns: {
-      enable: true,
-      listen: '0.0.0.0:1053',
-      ipv6: false,
-      'respect-rules': true,
-      'enhanced-mode': 'fake-ip',
-      'fake-ip-range': '198.18.0.1/16',
-      'fake-ip-filter-mode': 'blacklist',
-      'fake-ip-filter': [
-        '*',
-        '*.lan',
-        'xbox.*.microsoft.com',
-        '+.xboxlive.com',
-        'xbox.*.microsoft.com'
-      ],
-      nameserver: [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query'
-      ],
-      'proxy-server-nameserver': [
-        'https://dns.alidns.com/dns-query',
-        'https://dns.cloudflare.com/dns-query'
-      ],
-      fallback: [
-        'https://dns.cloudflare.com/dns-query',
-        'https://dns.google/dns-query'
-      ],
-      'fallback-filter': {
-        'geoip-code': 'CN'
-      },
-      'nameserver-policy': {
-        'geosite:cn,private': [
-          'https://dns.alidns.com/dns-query',
-          'https://doh.pub/dns-query'
-        ],
-        'geosite:geolocation-!cn': [
-          'https://dns.cloudflare.com/dns-query',
-          'https://dns.google/dns-query'
-        ]
-      }
-    },
     
     // 如果有代理节点，则包含代理节点配置
     proxies: proxies.length > 0 ? proxies : [],
