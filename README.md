@@ -10,7 +10,7 @@
 ## 2025.05.29更新：
 
   - 修复了Clash-for-Android和Stash配置报错的问题
-
+  - 修复了Clash模板中对 VLESS+reality+uTLS+Vision 协议的支持
 
 
 
