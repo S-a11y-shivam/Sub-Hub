@@ -3003,8 +3003,16 @@ function parseVlessToClash(vlessLink) {
       port: parseInt(url.port),
       uuid: url.username,
       tls: params.get('security') === 'tls' || params.get('security') === 'reality',
-      'skip-cert-verify': true
+      'client-fingerprint': 'chrome',
+      tfo: false,
+      'skip-cert-verify': false
     };
+    
+    // 添加 flow 参数
+    const flow = params.get('flow');
+    if (flow) {
+      node.flow = flow;
+    }
     
     // 添加网络类型配置
     const type = params.get('type');
@@ -3027,18 +3035,11 @@ function parseVlessToClash(vlessLink) {
           'grpc-service-name': safeDecodeURIComponent(serviceName)
         };
       }
-    }
-    
-    // Reality 配置
-    if (params.get('security') === 'reality') {
-      node.reality = true;
-      const publicKey = params.get('pbk');
-      const shortId = params.get('sid');
-      if (publicKey) node['reality-opts'] = { 'public-key': publicKey };
-      if (shortId) {
-        if (!node['reality-opts']) node['reality-opts'] = {};
-        node['reality-opts']['short-id'] = shortId;
-      }
+    } else if (type === 'tcp') {
+      node.network = 'tcp';
+    } else {
+      // 默认设置为 tcp
+      node.network = 'tcp';
     }
     
     // SNI 配置
