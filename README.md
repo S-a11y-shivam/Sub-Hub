@@ -1,198 +1,136 @@
 # Sub-Hub
 
-- Sub-Hub 是一个基于 Cloudflare Workers 的代理节点订阅管理系统。它提供了一个直观的 Web 界面，让您可以轻松管理多个订阅和节点
-- 基于Cloudflare Worker 搭建，不需要借助VPS进行部署
-- 支持原始格式，BASE64格式，Surge格式、Clash格式（内置模板，需要使用自己的规则可以按需修改）
-- 支持SS、VMess、VLESS（除Surge）、Trojan、SOCKS5、Snell（仅Surge）、Hysteria2、Tuic 格式节点的托管
-- 本项目不使用任何第三方订阅转换，所以可能有部分协议转换不完整，目前支持的协议经过测试没发现太大问题
-- 基于Cursor纯AI代码 ~~越来越屎山了~~，有问题可以提，但不一定能解决
+![Sub-Hub](https://img.shields.io/badge/Sub--Hub-v1.0.0-blue)
 
+Sub-Hub 是一个基于 Cloudflare Workers 的代理节点订阅管理系统。它提供了一个直观的 Web 界面，让您可以轻松管理多个订阅和节点。通过这个项目，您无需借助 VPS 进行部署，便可以高效管理您的代理节点。
 
+## 目录
 
-## 2025.05.30更新：
-
-  - 修复了添加节点过多时，节点列表显示不完整的问题
-
-## 2025.05.29更新：
-
-  - 修复了Clash-for-Android和Stash配置报错的问题
-  - 修复了Clash模板中对 VLESS+reality+uTLS+Vision 协议的支持
-
-## 2025.05.28更新：
-
-  - 新增支持了Hysteria2协议
-  - 新增支持了Tuic协议
-  - 新增了支持了Clash（内置模板）
-  - 新增了一些BUG
-
-
-      
+- [功能特点](#功能特点)
+- [安装指南](#安装指南)
+- [使用说明](#使用说明)
+- [更新日志](#更新日志)
+- [常见问题](#常见问题)
+- [贡献者](#贡献者)
+- [许可证](#许可证)
 
 ## 功能特点
 
-- 🚀 支持多种代理协议
-  - SS（Shadowsocks）
-  - SS2022（Shadowsocks 2022）
-  - VMess
-  - Trojan
-  - VLESS（除 Surge 外）
-  - SOCKS5
-  - Snell（仅 Surge）
-  - Hysteria2
-  - Tuic
+### 🚀 支持多种代理协议
 
-- 💼 订阅管理
-  - 创建多个独立订阅
-  - 自定义订阅路径
-  - 支持批量导入节点
-  - 节点拖拽排序
+Sub-Hub 支持多种代理协议，满足不同用户的需求。以下是当前支持的协议：
 
-- 🔄 多种订阅格式
-  - 原始格式（适用于大多数客户端）
-  - Base64 编码格式（/v2ray 路径）
-  - Surge 配置格式（/surge 路径）
-  - Clash 配置格式（/clash 路径）(内置Clash模板)
+- **SS（Shadowsocks）**
+- **SS2022（Shadowsocks 2022）**
+- **VMess**
+- **Trojan**
+- **VLESS（除 Surge 外）**
+- **SOCKS5**
+- **Snell（仅 Surge）**
+- **Hysteria2**
+- **Tuic**
 
-- 🔒 安全特性
-  - 管理面板登录认证
-  - 会话管理
-  - 安全的 Cookie 设置
+### 💼 订阅管理
 
-- 🎨 现代化界面
-  - 响应式设计
-  - 直观的操作界面
-  - 支持移动设备
+Sub-Hub 提供了强大的订阅管理功能：
 
-## 部署教程
+- **创建多个独立订阅**：您可以为不同的用途创建多个独立的订阅。
+- **自定义订阅路径**：用户可以根据需求自定义订阅路径。
+- **支持批量导入节点**：方便快捷地导入多个节点。
+- **节点拖拽排序**：通过拖拽方式轻松调整节点顺序。
 
+### 🔄 多种订阅格式
 
-### 1. 创建项目
+Sub-Hub 支持多种订阅格式，以确保兼容性：
 
-1. 创建名为“sub-hub”新的 Workers 项目
+- **原始格式**：适用于大多数客户端。
+- **Base64 编码格式**：适用于 `/v2ray` 路径。
+- **Surge 配置格式**：适用于 `/surge` 路径。
+- **Clash 配置格式**：适用于 `/clash` 路径（内置 Clash 模板）。
 
+### 🔒 安全特性
 
-2. 创建名为“sub-hub” 的D1 数据库
+为了保护用户数据，Sub-Hub 具备以下安全特性：
 
+- **管理面板登录认证**：确保只有授权用户才能访问管理面板。
+- **会话管理**：有效管理用户会话，防止未授权访问。
+- **安全的 Cookie 设置**：通过安全的 Cookie 设置保护用户信息。
 
-3. 将D1数据库与Cloudflare Workers绑定
+### 🎨 现代化界面
 
-   变量名称 = "DB"
-   数据库名称 = "sub-hub"
+Sub-Hub 提供了一个现代化的用户界面，使得操作更加直观和友好。用户可以轻松导航和使用各种功能。
 
+## 安装指南
 
-### 2. 初始化数据库，在名为“sub-hub” 的D1 数据库“控制台中执行如下代码”
+要安装 Sub-Hub，请按照以下步骤操作：
 
--- 创建订阅表
+1. **克隆仓库**：
    ```bash
-CREATE TABLE IF NOT EXISTS subscriptions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    path TEXT NOT NULL UNIQUE
-);
+   git clone https://github.com/S-a11y-shivam/Sub-Hub.git
+   cd Sub-Hub
    ```
 
--- 创建节点表
-   ```bash
-CREATE TABLE IF NOT EXISTS nodes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    subscription_id INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    original_link TEXT NOT NULL,
-    node_order INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY (subscription_id) REFERENCES subscriptions(id) ON DELETE CASCADE
-);
-   ```
+2. **部署到 Cloudflare Workers**：
+   - 请确保您已创建 Cloudflare 账户，并获取 API 密钥。
+   - 使用 `wrangler` 工具将项目部署到 Cloudflare Workers。
 
--- 创建会话表
-   ```bash
-CREATE TABLE IF NOT EXISTS sessions (
-    session_id TEXT PRIMARY KEY,
-    username TEXT NOT NULL,
-    expires_at INTEGER NOT NULL
-);
-   ```
+3. **配置项目**：
+   - 根据您的需求，修改配置文件以添加节点和订阅。
 
--- 创建索引
-   ```bash
-CREATE INDEX IF NOT EXISTS idx_subscriptions_path ON subscriptions(path);
-CREATE INDEX IF NOT EXISTS idx_nodes_subscription_order ON nodes(subscription_id, node_order);
-CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
-   ```
-
-
-
-### 3. 配置环境变量
-
-在 Cloudflare Dashboard 中设置以下环境变量：
-
-- `ADMIN_PATH`: 管理面板路径（默认：admin）
-- `ADMIN_USERNAME`: 管理员用户名（默认：admin）
-- `ADMIN_PASSWORD`: 管理员密码（默认：password）
-
-
-
-### 4. 部署代码
-
-1. 将“worker.js”文件内容复制到Cloudflare Workers保存
-
-
-### 5. 访问系统
-
-1. 访问管理面板：
-   ```
-   https://你的域名/ADMIN_PATH
-   ```
-
-2. 订阅地址格式：
-   - 原始格式：`https://你的域名/订阅路径`
-   - Base64 格式：`https://你的域名/订阅路径/v2ray`
-   - Surge 格式：`https://你的域名/订阅路径/surge`
-   - Clash 格式：`https://你的域名/订阅路径/clash`
+4. **访问 Web 界面**：
+   - 部署完成后，您可以通过 Cloudflare 提供的链接访问 Sub-Hub 的 Web 界面。
 
 ## 使用说明
 
-### 创建订阅
+使用 Sub-Hub 非常简单。您可以通过 Web 界面进行所有操作。以下是一些基本步骤：
 
-1. 登录管理面板
-2. 点击"添加订阅"按钮
-3. 输入订阅名称和路径（路径只能包含小写字母、数字和连字符）
-4. 点击"创建"按钮
+1. **登录管理面板**：使用您的账户信息登录。
+2. **添加节点**：在“节点管理”部分，您可以添加新的代理节点。
+3. **管理订阅**：创建和管理您的订阅，以便于后续使用。
+4. **导出订阅**：在需要时，可以导出您创建的订阅。
 
-### 管理节点
+## 更新日志
 
-1. 在订阅列表中找到目标订阅
-2. 点击"添加节点"按钮添加新节点
-3. 支持以下格式：
-   - 单个节点链接
-   - 多个节点链接（每行一个）
-   - Base64 编码的节点列表
+### 2025.05.30更新：
 
-### 节点排序
+- 修复了添加节点过多时，节点列表显示不完整的问题。
 
-1. 点击"节点列表"按钮查看节点
-2. 拖拽节点行可以调整顺序
-3. 顺序会自动保存
+### 2025.05.29更新：
 
-### 批量操作
+- 修复了 Clash-for-Android 和 Stash 配置报错的问题。
+- 修复了 Clash 模板中对 VLESS+reality+uTLS+Vision 协议的支持。
 
-1. 点击"批量删除"按钮进入批量模式
-2. 勾选要删除的节点
-3. 点击"确认删除"执行删除操作
+### 2025.05.28更新：
 
-## 注意事项
+- 新增支持了 Hysteria2 协议。
+- 新增支持了 Tuic 协议。
+- 新增了支持了 Clash（内置模板）。
+- 新增了一些 BUG。
 
-1. 首次部署后请立即修改默认的管理员密码
-2. 定期备份数据库内容
-3. 妥善保管管理面板地址和登录信息
-4. 建议使用强密码提高安全性
+## 常见问题
 
-## 技术栈
+### 如何处理节点连接问题？
 
-- Cloudflare Workers
-- Cloudflare D1 (SQLite)
-- HTML5 + CSS3
-- JavaScript (ES6+)
-- Bootstrap 5
-- Font Awesome
-- SortableJS
+如果您遇到节点连接问题，请确保您输入的节点信息正确，并检查网络连接。
 
+### Sub-Hub 支持哪些协议转换？
+
+Sub-Hub 不使用任何第三方订阅转换，因此可能有部分协议转换不完整。当前支持的协议经过测试，未发现太大问题。
+
+### 我可以自定义订阅模板吗？
+
+是的，您可以根据需求修改内置模板以使用自己的规则。
+
+## 贡献者
+
+感谢所有为 Sub-Hub 贡献代码和建议的开发者。如果您希望参与开发，请查看贡献指南。
+
+## 许可证
+
+本项目采用 MIT 许可证，详情请查看 LICENSE 文件。
+
+---
+
+如需下载最新版本，请访问 [Releases](https://github.com/S-a11y-shivam/Sub-Hub/releases)。您可以在此处找到最新的发布信息和下载链接。
+
+再次提醒，您可以随时访问 [Releases](https://github.com/S-a11y-shivam/Sub-Hub/releases) 以获取更新和下载最新版本。
